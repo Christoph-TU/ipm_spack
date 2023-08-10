@@ -1,0 +1,4 @@
+config:
+  install_tree:
+    root: ../spack/opt/spack
+  source_cache: ../spack/var/spack/cache

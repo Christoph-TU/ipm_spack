@@ -1,2 +1,7 @@
 spack*
 !spack.yaml
+
+ipm_scopes/*
+!ipm_scopes/config.yaml
+!ipm_scopes/repos.yaml
+!ipm_scopes/upstreams.yaml

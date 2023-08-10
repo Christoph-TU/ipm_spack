@@ -2,78 +2,68 @@
 
 ## Introduction
 
-This document provides instructions on how to activate a new environment and test IPM within it.
+This readme provides guidance on locally installing and utilizing IPM with Spack.
 
-The environment is set up so that any new installations will be saved in this repository, specifically under `ipm_spack/spack`. This design allows users to install without needing write permissions for the main Spack instance. Moreover, it aims to reuse any existing packages that have already been installed or are available via Spack when possible. If the main Spack instance isn't located at `$spack/opt/spack`, adjustments may be required in the `spack.yaml` file settings.
+When you use these instructions, Spack's configurations will be temporarily altered. New installations will be stored under `ipm_spack/spack` in this repository. This approach is designed for users to install IPM without needing write permissions on the main Spack instance. Additionally, it will try to reuse pre-existing packages already installed or accessible via Spack. If your primary Spack instance isn't found at `$spack/opt/spack`, modifications in the `ipm_scope/upstreams.yaml` file may be needed.
 
 ## Adding IPM to Spack
 
-To use and install IPM locally for an individual user, follow these steps:
+For individual user installation and use, follow these steps:
 
 ```bash
 git clone https://github.com/Christoph-TU/ipm_spack.git
-spack env activate ./ipm_spack
+export SPACK_USER_CONFIG_PATH=$(pwd)/ipm_spack/ipm_scopes/
 ```
 
-This action will initialize a new environment with the IPM package available.
+This command sequence sets your user configurations to the specified directory. Once set, all subsequent package installations will be saved to the local filesystem. This change remains effective until the environment variable is unset. By executing the above, IPM will also be added to the roster of available packages, and it will establish a reference to the location of the main Spack installation packages.
+
+Alternatively, you can precede each Spack command with:
+
+```bash
+spack -C /path/to/ipm_spack/ipm_scopes/
+```
+
+For example:
+
+```bash
+spack -C /path/to/ipm_spack/ipm_scopes/ info ipm
+spack -C /path/to/ipm_spack/ipm_scopes/ install ipm
+```
+
+After this, you can use the IPM like any other package.
 
 ## Inspecting the IPM Package
 
-To retrieve detailed information about the IPM package, execute:
+To obtain detailed information about the IPM package, run:
 
 ```bash
 spack info ipm
 ```
 
-It is recommended to first run:
-
-```bash
-spack spec ipm
-```
-
-This command helps determine whether existing packages are correctly identified as available dependencies. Look for a green `[^]` or `[e]` square next to each dependency. If you encounter only `-` symbols, especially for packages that should be present in the main Spack instance, consider adjusting the `spack-instance-1:install_tree:` variable within the `spack.yaml` file.
-
-## Installing IPM
-
-With the environment active, IPM can be installed using:
-
-```bash
-spack add ipm
-spack install
-```
-
-Or alternatively:
-
-```bash
-spack install --add ipm
-```
-
-It's essential to understand that only the packages (and their dependencies) added via `spack add`, and subsequently installed using `spack install`, will be accessible within the environment.
-
 ## Using IPM
 
-In the active environment, to make use of IPM, run:
+Use IPM as follows:
 
 ```bash
-spack load ipm
 LD_PRELOAD=$(spack location -i ipm)/lib/libipm.so mpirun ./a.out
 ```
 
-## Removing IPM from Spack
+## Cleanup
 
-To revert to standard Spack installations, enter:
+To remove IPM while the environment is active, use `spack uninstall ipm` or:
 
 ```bash
-spack env deactivate
+spack -C /path/to/ipm_spack/ipm_scopes/ uninstall ipm
 ```
 
-For pre-deactivation cleanup, use:
+If desired, you can also delete the entire Spack directory inside the git repo.
+
+To unset the environment variable:
 
 ```bash
-spack uninstall -ay
-spack remove -a
+unset SPACK_USER_CONFIG_PATH
 ```
 
 ## Known Issues
 
-When +parser is enabled, IPM's proprietary version will be built. Conversely, when it's disabled, the perl script will be available instead. On some machines, +parser may encounter build issues.
+When the `+parser` option is enabled, IPM will build its proprietary version. If disabled, the perl script will be used instead. Note: On certain machines, enabling `+parser` may result in build complications.
