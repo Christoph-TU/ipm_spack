@@ -50,9 +50,6 @@ class Ipm(AutotoolsPackage):
         env.set('MPICC', spec['mpi'].mpicc)
         env.set('MPIFC', spec['mpi'].mpifc)
 
-    def setup_run_environment(self, env):
-        env.prepend_path('LD_LIBRARY_PATH', self.prefix.lib)
-
     def autoreconf(self, spec, prefix):
         script = Executable(join_path(self.stage.source_path, 'bootstrap.sh'))
         script()
