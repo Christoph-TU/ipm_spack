@@ -19,11 +19,19 @@ This action will initialize a new environment with the IPM package available.
 
 ## Inspecting the IPM Package
 
-To retrieve detailed information about the IPM package, use:
+To retrieve detailed information about the IPM package, execute:
 
 ```bash
 spack info ipm
 ```
+
+It is recommended to first run:
+
+```bash
+spack spec ipm
+```
+
+This command helps determine whether existing packages are correctly identified as available dependencies. Look for a green `[^]` or `[e]` square next to each dependency. If you encounter only `-` symbols, especially for packages that should be present in the main Spack instance, consider adjusting the `spack-instance-1:install_tree:` variable within the `spack.yaml` file.
 
 ## Installing IPM
 
