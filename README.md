@@ -2,22 +2,20 @@
 
 ## Introduction
 
-This readme provides guidance on locally installing and utilizing IPM with Spack.
-
-When you use these instructions, Spack's configurations will be temporarily altered. New installations will be stored under `ipm_spack/spack` in this repository. This approach is designed for users to install IPM without needing write permissions on the main Spack instance. Additionally, it will try to reuse pre-existing packages already installed or accessible via Spack. If your primary Spack instance isn't found at `$spack/opt/spack`, modifications in the `ipm_scope/upstreams.yaml` file may be needed.
+This git repo contains minimal configuration files and instructions for users to install the profiler IPM locally with Spack without needing write access to the main Spack instance. New installations will be stored under `ipm_spack/spack` in this repository. Although packages will be installed in a different directory, it will still attempt to reuse pre-existing packages already installed or accessible via Spack. If the primary Spack instance is not located at `$spack/opt/spack`, modifications in the `ipm_spack/upstreams.yaml` file may be necessary.
 
 ## Adding IPM to Spack
 
-For individual user installation and use, follow these steps:
+For individual user installation and use the following two command are sufficent:
 
 ```bash
 git clone https://github.com/Christoph-TU/ipm_spack.git
 export SPACK_USER_CONFIG_PATH=$(pwd)/ipm_spack/ipm_scopes/
 ```
 
-This command sequence sets your user configurations to the specified directory. Once set, all subsequent package installations will be saved to the local filesystem. This change remains effective until the environment variable is unset. By executing the above, IPM will also be added to the roster of available packages, and it will establish a reference to the location of the main Spack installation packages.
+This command sequence sets the user configurations to the specified directory. Once set, all subsequent package installations will be saved to the local filesystem. This change remains effective until the environment variable is unset. By executing the above, IPM will also be added to the list of available packages. After this, IPM can be used like any other package.
 
-Alternatively, you can precede each Spack command with:
+Alternatively, each Spack command can be precede like so:
 
 ```bash
 spack -C /path/to/ipm_spack/ipm_scopes/
@@ -30,11 +28,11 @@ spack -C /path/to/ipm_spack/ipm_scopes/ info ipm
 spack -C /path/to/ipm_spack/ipm_scopes/ install ipm
 ```
 
-After this, you can use the IPM like any other package.
+This approach may be desireable if the user config was modified and one wishes to keep using some of the features. With this approach only the necessary configurations needed for the installation will be overwritten with the rest remaining unchanged.
 
 ## Inspecting the IPM Package
 
-To obtain detailed information about the IPM package, run:
+To obtain additional information about the IPM package:
 
 ```bash
 spack info ipm
@@ -42,7 +40,7 @@ spack info ipm
 
 ## Using IPM
 
-Use IPM as follows:
+For usage, preloading IPM can be done via:
 
 ```bash
 LD_PRELOAD=$(spack location -i ipm)/lib/libipm.so mpirun ./a.out
@@ -50,13 +48,15 @@ LD_PRELOAD=$(spack location -i ipm)/lib/libipm.so mpirun ./a.out
 
 ## Cleanup
 
-To remove IPM while the environment is active, use `spack uninstall ipm` or:
+While the environment is set, `spack uninstall ipm` can be used for cleanup or alternatively:
 
 ```bash
 spack -C /path/to/ipm_spack/ipm_scopes/ uninstall ipm
 ```
 
-If desired, you can also delete the entire Spack directory inside the git repo.
+can be used.
+
+If desired, the entire Spack directory inside the git repo can be deleted.
 
 To unset the environment variable:
 
@@ -66,4 +66,4 @@ unset SPACK_USER_CONFIG_PATH
 
 ## Known Issues
 
-When the `+parser` option is enabled, IPM will build its proprietary version. If disabled, the perl script will be used instead. Note: On certain machines, enabling `+parser` may result in build complications.
+When the `+parser` option is enabled, IPM will build its proprietary version. If disabled, the perl script will be used instead. Note: On certain machines, enabling `+parser` may lead to build complications.
