@@ -46,6 +46,26 @@ For usage, preloading IPM can be done via:
 LD_PRELOAD=$(spack location -i ipm)/lib/libipm.so mpirun ./a.out
 ```
 
+## Using the Parser
+
+When building, the option `+parser` can be used to install the dependencies required for the parser. This includes ploticus.
+
+After installation, the parser can easily be used by loading IPM with `spack load ipm`. Afterwards, the parser can be invoked like so:
+
+```bash
+ipm_parse -h
+```
+
+Example of using the html option:
+
+```bash
+export IPM_LOG=full
+LD_PRELOAD=$(spack location -i ipm)/lib/libipm.so mpirun ./a.out
+
+export IPM_KEYFILE=$(spack location -i ipm)/etc/ipm_key_mpi
+ipm_parse -html output.ipm.xml
+```
+
 ## Cleanup
 
 While the environment is set, `spack uninstall ipm` can be used for cleanup or alternatively:
@@ -63,7 +83,3 @@ To unset the environment variable:
 ```bash
 unset SPACK_USER_CONFIG_PATH
 ```
-
-## Known Issues
-
-When the `+parser` option is enabled, IPM will build its proprietary version. If disabled, the perl script will be used instead. Note: On certain machines, enabling `+parser` may lead to build complications.

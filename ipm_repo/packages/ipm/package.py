@@ -30,9 +30,9 @@ class Ipm(AutotoolsPackage):
     variant('libunwind', default=False, description='Enable libunwind')
 
     variant('papi_multiplexing', default=False, when='+papi', description='Enable PAPI multiplexing')
-    variant('posixio', default=False, description='Enable posixio')
+    variant('posixio', default=False, description='Enable POSIXIO')
     variant('pmon', default=False, description='Enable power monitoring module')
-    variant('parser', default=False, description='Enable building the ipm parser')
+    variant('parser', default=False, description='Add dependencies for running ipm_parse')
 
     depends_on('autoconf', type='build')
     depends_on('automake', type='build')
@@ -43,7 +43,12 @@ class Ipm(AutotoolsPackage):
     depends_on('papi', when='+papi')
     depends_on('cuda', when='+cuda')
     depends_on('libunwind', when='+libunwind')
-    depends_on('mxml', when='+parser')
+
+    depends_on('perl', type='run', when='+parser')
+    depends_on('ploticus', type='run', when='+parser')
+
+    def patch(self):
+        filter_file(r"#!/usr/bin/perl","#!/usr/bin/env perl", "bin/ipm_parse")
 
     def setup_build_environment(self, env):
         spec = self.spec
@@ -65,10 +70,6 @@ class Ipm(AutotoolsPackage):
 
         if '+libunwind' in spec:
             args.append('--with-libunwind={0}'.format(spec['libunwind'].prefix))
-
-        if '+parser' in spec:
-            args.append('--enable-parser')
-            args.append('--with-mxmlpath={0}'.format(spec['mxml'].prefix))
 
         if '+papi_multiplexing' in spec:
             args.append('--enable-papi-multiplexing')
