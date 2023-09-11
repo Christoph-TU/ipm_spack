@@ -52,7 +52,7 @@ class Ipm(AutotoolsPackage):
     depends_on("perl", type="run", when="+parser")
     depends_on("ploticus", type="run", when="+parser")
 
-    # 2COMPLEX and 2DOUBLE_COMPLEX non-standard types and lead
+    # 2COMPLEX and 2DOUBLE_COMPLEX are non-standard types and lead
     # to compile errors when building with coll_details
     patch("remove_MPI_2COMPLEX_and_MPI_2DOUBLE_COMPLEX.patch", when="+coll_details")
 
